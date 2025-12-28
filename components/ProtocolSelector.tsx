@@ -24,15 +24,15 @@ export default function ProtocolSelector({
           if (preset) onSelect(preset);
         }}
       >
-        {presets.map(preset => (
+        {presets.map((preset) => (
           <option key={preset.id} value={preset.id}>
             {preset.name}
           </option>
         ))}
       </select>
 
-      <p className="text-sm opacity-80 mt-2">
-        Select a preset to apply protocol risk parameters.
+      <p className="hint">
+        Applies protocol risk parameters only.
       </p>
     </div>
   );

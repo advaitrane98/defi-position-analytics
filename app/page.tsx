@@ -14,7 +14,6 @@ import { computeHealthScore } from "@/lib/health/score";
 import { CDPInput } from "@/lib/health/types";
 
 export default function Home() {
-  // 1️⃣ Selected protocol preset
   const [selectedPresetId, setSelectedPresetId] = useState(
     PROTOCOL_PRESETS[0].id
   );
@@ -23,7 +22,6 @@ export default function Home() {
     (p) => p.id === selectedPresetId
   )!;
 
-  // 2️⃣ Position input state
   const [input, setInput] = useState<CDPInput>({
     collateralAmount: 1000,
     collateralPrice: 0.5,
@@ -31,7 +29,6 @@ export default function Home() {
     liquidationRatio: selectedPreset.liquidationRatio,
   });
 
-  // 3️⃣ Sync liquidation ratio when preset changes
   useEffect(() => {
     setInput((prev) => ({
       ...prev,
@@ -39,9 +36,7 @@ export default function Home() {
     }));
   }, [selectedPreset]);
 
-  // 4️⃣ Core calculations
   const health = calculateCDPHealth(input);
-
   const score = computeHealthScore(
     health.collateralRatio,
     input.liquidationRatio
@@ -51,23 +46,25 @@ export default function Home() {
     <main className="container">
       <h1>DeFi Position Health Calculator</h1>
 
-      {/* Protocol preset selector */}
-      <ProtocolSelector
-        presets={PROTOCOL_PRESETS}
-        selectedId={selectedPresetId}
-        onSelect={(preset) => setSelectedPresetId(preset.id)}
-      />
+      <div className="grid">
+        {/* LEFT */}
+        <div className="left">
+          <ProtocolSelector
+            presets={PROTOCOL_PRESETS}
+            selectedId={selectedPresetId}
+            onSelect={(preset) => setSelectedPresetId(preset.id)}
+          />
 
-      {/* User inputs */}
-      <InputPanel input={input} onChange={setInput} />
+          <InputPanel input={input} onChange={setInput} />
+        </div>
 
-      {/* Health summary */}
-      <HealthSummary score={score} />
+        {/* RIGHT */}
+        <div className="right">
+          <HealthSummary score={score} />
+          <RiskMetrics health={health} />
+        </div>
+      </div>
 
-      {/* Risk metrics */}
-      <RiskMetrics health={health} />
-
-      {/* Explanation */}
       <HowItWorks />
     </main>
   );
